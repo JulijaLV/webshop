@@ -2,29 +2,25 @@ package com.github.julijalv.webshop.ui;
 
 import com.github.julijalv.webshop.backend.Product;
 import com.github.julijalv.webshop.repository.ProductRepository;
-import com.github.julijalv.webshop.repository.ShoppingCartRepository;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 @Route
 public class MainView extends VerticalLayout {
 
-//    @Autowired
-//    private ShoppingCartRepository shoppingCartRepository;
+
     @Autowired
     private ProductRepository productRepository;
+    private Grid<Product> productGrid = new Grid<>(Product.class, false);
 
-    private ProductForm form;
-    private Grid<Product> productGrid = new Grid<>(Product.class);
-
-
-
-//    public
-    private ProductForm createProductForm(Grid<Product> grid, Product item) {
-        return new ProductForm(item.getId(), item.getDescription());
+    private ProductForm createProductForm(Grid<Product> grid, Product product) {
+        return new ProductForm(product);
     }
 
     private void configureGrid() {
@@ -38,11 +34,26 @@ public class MainView extends VerticalLayout {
     }
     public MainView(ProductRepository productRepository) {
         this.productRepository = productRepository;
+
+        Icon drawer = VaadinIcon.MENU.create();
+        Span title = new Span("Ze Shopping");
+        HorizontalLayout header = new HorizontalLayout(drawer, title);
+        header.expand(title);
+        header.setPadding(true);
+        header.setWidth("100%");
+        add(header);
+
+
         addClassName("product-view");
         setSizeFull();
         configureGrid();
-        add(productGrid);
+
+        add(productGrid, new CartView());
         updateList();
+
+
+
+
 
 
 
